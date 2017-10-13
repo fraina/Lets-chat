@@ -1,0 +1,258 @@
+@import 'node_modules/scss-mdcolor-helper/MDcolorHelper';
+
+// *************************************
+//
+//  Fundation - config
+//
+// *************************************
+
+// ----------------------------
+// font
+// ----------------------------
+
+$b-fontSize: 16px;
+$b-fontSize-xs: $b-fontSize * .8;
+$b-fontSize-s: $b-fontSize * .9;
+
+// ----------------------------
+// space
+// ----------------------------
+
+$b-space: 1em;
+$b-space-xs: $b-space * .5;
+
+// *************************************
+//
+//   app
+//
+// *************************************
+
+#app {
+  background-color: MDcolor('blue-grey', 800);
+  height: 100%;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+// -------------------------------------
+//   Scaffolding
+// -------------------------------------
+
+.wrapper {
+  position: relative;
+  width: 50%;
+  text-align: center;
+}
+
+
+// *************************************
+//
+//  Chatroom
+//
+// -------------------------------------
+//   Template (Jade)
+// -------------------------------------
+//
+// .chatroom
+//   .chatroom-info
+//     span.chatroom-title
+//   .chatroom-main
+//     .chat [is-others|is-me]
+//       .chat-userIcon
+//       .chat-wrapper
+//         .chat-userName
+//         .chat-message
+//  .chatroom-input
+//    textarea.chatroom-textarea
+//    button.chatroom-submit
+//
+// *************************************
+
+// -------------------------------------
+//   chatroom
+// -------------------------------------
+
+.chatroom {
+  position: relative;
+  width: 480px;
+  height: 640px;
+  display: block;
+  background: MDcolor(grey, 100);
+  border-radius: 0 0 $b-space-xs $b-space-xs;
+  overflow: hidden;
+  margin: auto;
+}
+
+// -------------------------------------
+//   chatroom - Scaffolding
+// -------------------------------------
+
+.chatroom-info {
+  display: block;
+  height: 2.2em;
+  border-bottom: 1px solid MDcolor(grey, 300);
+}
+
+.chatroom-title {
+  display: block;
+  text-align: center;
+  margin-top: .8em;
+  color: MDcolor(grey, 600);
+}
+
+.chatroom-dialog {
+  width: 100%;
+  height: calc(100% - 6.3em);
+  padding: $b-space;
+  overflow: auto;
+  padding-bottom: .2em;
+}
+
+// -------------------------------------
+//   chat
+// -------------------------------------
+
+.chat {
+position: relative;
+  display: block;
+  width: calc(100% - 6em);
+  margin-bottom: $b-space-xs;
+  overflow: hidden;
+}
+
+.chat-userIcon {
+  position: absolute;
+  width: 32px;
+  height: 32px;
+  border-radius: 16px;
+  background-color: MDcolor('blue-grey', 600);
+  color: MDcolor(grey, 50);
+  text-align: center;
+  line-height: 32px;
+  font-size: $b-fontSize;
+  float: left;
+  top: 3px;
+}
+
+.chat-wrapper {
+  position: relative;
+}
+
+.chat-userName {
+  font-size: $b-fontSize-xs;
+  height: 20px;
+  padding-left: 4px;
+  color: MDcolor('blue-grey', 600)
+}
+
+.chat-message {
+  background-color: #fff;
+  font-size: $b-fontSize-s;
+  border-radius: $b-space-xs;
+  padding: 3px 11px;
+  border: 1px MDcolor(grey, 200) solid;
+
+  p {
+    margin: 0;
+    padding: 0;
+  }
+}
+
+.chat-time {
+  position: absolute;
+  bottom: 0;
+  width: 60px;
+  font-size: $b-fontSize-xs;
+  color: MDcolor(grey, 400);
+}
+
+// -------------------------------------
+//   chat - Modifiers
+// -------------------------------------
+
+.is-others {
+  .chat-wrapper {
+    float: left;
+    margin-left: 40px;
+    max-width: 254px;
+  }
+
+  .chat-time {
+    right: -65px;
+  }
+}
+
+.is-me {
+  float: right;
+  .chat-userIcon,
+  .chat-userName {
+    display: none;
+  }
+  .chat-time {
+    left: -65px;
+    text-align: right;
+  }
+  .chat-wrapper {
+    float: right;
+    max-width: 290px;
+  }
+  .chat-message {
+    background-color: MDcolor('blue-grey', 100);
+  }
+}
+
+.is-system {
+  margin: 10px auto;
+  background-color: MDcolor(grey, 700);
+  color: white;
+  border-radius: 10px;
+  text-align: center;
+  padding: 3px 0;
+}
+
+// -------------------------------------
+//   chatroom-input
+// -------------------------------------
+
+.chatroom-input {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+}
+
+.chatroom-textarea {
+  transition: 1s all;
+  border: 1px MDcolor(grey, 200) solid;
+  margin: 0 4px -17px 4px;
+  padding: 3px 7px;
+  resize: none;
+  border-radius: $b-space-xs;
+  outline: none;
+
+  &:hover {
+    border: 1px MDcolor(grey, 500) solid;
+  }
+}
+
+.chatroom-submit {
+  transition: all .5s;
+  width: 52px;
+  height: 44px;
+  background: MDcolor('blue-grey', 100);
+  color: MDcolor(grey, 50);
+  margin: 0 4px 4px 0;
+  border: 0;
+  line-height: 40px;
+  font-size: $b-fontSize-s;
+  border-radius: $b-space-xs;
+
+  &:disabled {
+    background: MDcolor(grey, 300);
+  }
+
+  &:hover:enabled {
+    background: MDcolor('blue-grey', 300);
+  }
+}

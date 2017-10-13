@@ -1,0 +1,30 @@
+{
+  "name": "Let's chat!",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "centrifuge": "^1.4.6",
+    "chance": "^1.0.11",
+    "jssha": "^2.3.1",
+    "lodash": "^4.17.4",
+    "moment": "^2.19.1",
+    "react": "^15.5.4",
+    "react-dom": "^15.5.4",
+    "scss-mdcolor-helper": "^1.0.0"
+  },
+  "devDependencies": {
+    "node-sass-chokidar": "0.0.1",
+    "npm-run-all": "^4.0.2",
+    "react-scripts": "1.0.5",
+    "sanitize.css": "^5.0.0"
+  },
+  "scripts": {
+    "start-js": "react-scripts start",
+    "start": "npm-run-all -p watch-css start-js",
+    "build": "npm run build-css && react-scripts build",
+    "build-css": "node-sass-chokidar src/ -o src/",
+    "watch-css": "npm run build-css && node-sass-chokidar src/ -o src/ --watch --recursive",
+    "test": "react-scripts test --env=jsdom",
+    "eject": "react-scripts eject"
+  }
+}
