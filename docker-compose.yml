@@ -1,0 +1,14 @@
+version: "3"
+
+services:
+  centrifugo:
+    image: centrifugo/centrifugo
+    ulimits:
+      nofile:
+        soft: 65536
+        hard: 65536
+    volumes:
+      - ./centrifugo:/centrifugo
+    ports:
+      - 8010:8000
+
