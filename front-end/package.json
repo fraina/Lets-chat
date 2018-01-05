@@ -2,6 +2,7 @@
   "name": "Lets_chat!",
   "version": "0.1.0",
   "private": true,
+  "homepage": ".",
   "dependencies": {
     "centrifuge": "^1.4.6",
     "chance": "^1.0.11",

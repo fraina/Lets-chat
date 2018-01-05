@@ -18,7 +18,7 @@ export default class App extends Component {
       text: ''
     }
 
-    this.secret = 'secret'
+    this.secret = process.env.REACT_APP_WS_SECRET
     this.randomName = chance.name()
     this.dialogNode = null
     this.online = 0
@@ -28,8 +28,8 @@ export default class App extends Component {
     this.centrifuge = this.conn()
 
     this.centrifuge.on('connect', function(context) {
-      const name = JSON.stringify(this.randomName)
-      this.addBlob(`connected with ID ${JSON.parse(name)}`)
+      const name = this.randomName
+      this.addBlob(`connected with ID ${name}`)
       this.subscribe(name, this.centrifuge)
     }.bind(this))
 
@@ -49,8 +49,8 @@ export default class App extends Component {
   conn() {
     const timestamp = parseInt(new Date().getTime()/1000, 10).toString()
     
-    const name = JSON.stringify(this.randomName)
-    const info = `{"name": ${name}}`
+    const name = this.randomName
+    const info = JSON.stringify({"name": name})
     var hmacBody = name + timestamp + info
     var shaObj = new jsSHA("SHA-256", "TEXT")
     shaObj.setHMACKey(this.secret, "TEXT")
@@ -58,7 +58,7 @@ export default class App extends Component {
     var token = shaObj.getHMAC("HEX")
 
     return new Centrifuge({
-      url: 'ws://localhost:8010/',
+      url: `${process.env.REACT_APP_WS_PROTOCAL}://${process.env.REACT_APP_WS_HOST}:${process.env.REACT_APP_WS_PORT}`,
       user: name,
       timestamp: timestamp,
       token: token,
@@ -87,16 +87,16 @@ export default class App extends Component {
     
     subscription.on('join', function(message) {
       console.log('join message: ', message)
-      if (JSON.parse(message.data.user) !== this.randomName) {
+      if (message.data.user !== this.randomName) {
         this.online++
       }
-      this.addBlob(`${JSON.parse(message.data.user)} joined channel`)
+      this.addBlob(`${message.data.user} joined channel`)
     }.bind(this))
 
     subscription.on('leave', function(message) {
       console.log('leave message: ', message)
       this.online--
-      this.addBlob(`${JSON.parse(message.data.user)} left channel`)
+      this.addBlob(`${message.data.user} left channel`)
     }.bind(this))
   }
 

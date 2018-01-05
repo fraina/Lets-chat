@@ -1,8 +1,9 @@
-version: "3"
+version: "2"
 
 services:
   centrifugo:
     image: centrifugo/centrifugo
+    #mem_limit: 200m
     ulimits:
       nofile:
         soft: 65536
@@ -10,5 +11,4 @@ services:
     volumes:
       - ./centrifugo:/centrifugo
     ports:
-      - 8010:8000
-
+      - 8010:8000  
