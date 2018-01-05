@@ -184,8 +184,7 @@ export default class App extends Component {
           <textarea 
             className="chatroom-textarea" 
             onChange={this.onEnterMsg.bind(this)}
-            placeholder="Message" 
-            cols="48" 
+            placeholder="Message"
             value={this.state.text}
             onKeyPress={this.onPressEnter.bind(this)}
           />

@@ -220,9 +220,11 @@ position: relative;
   position: absolute;
   bottom: 0;
   width: 100%;
+  display: flex;
 }
 
 .chatroom-textarea {
+  flex: 1;
   transition: 1s all;
   border: 1px MDcolor(grey, 200) solid;
   margin: 0 4px -17px 4px;
@@ -230,6 +232,7 @@ position: relative;
   resize: none;
   border-radius: $b-space-xs;
   outline: none;
+  height: calc(100% - 6px);
 
   &:hover {
     border: 1px MDcolor(grey, 500) solid;
@@ -239,7 +242,7 @@ position: relative;
 .chatroom-submit {
   transition: all .5s;
   width: 52px;
-  height: 44px;
+  height: 100%;
   background: MDcolor('blue-grey', 100);
   color: MDcolor(grey, 50);
   margin: 0 4px 4px 0;
