@@ -15,13 +15,19 @@ export default class App extends Component {
     this.state = {
       message: [],
       isLoading: true,
-      text: ''
+      text: '',
+      showNew: false
     }
 
     this.secret = process.env.REACT_APP_WS_SECRET
     this.randomName = chance.name()
     this.dialogNode = null
+    this.lastMsgNode = null
+    this.newMsgNode = null
     this.online = 0
+
+    this.handleScroll = this.onScroll.bind(this);
+    this.onClickNewMsg = this.onClickNewMsg.bind(this);
   }
 
   componentDidMount() {
@@ -40,10 +46,12 @@ export default class App extends Component {
 
     this.setState({ isLoading: false })
     this.centrifuge.connect()
+
+    this.dialogNode.addEventListener('scroll', this.handleScroll);
   }
-  
-  componentDidUpdate() {
-    this.dialogNode.scrollTop = this.dialogNode.scrollHeight
+
+  componentWillUnmount() {
+    this.dialogNode.removeEventListener('scroll', this.handleScroll);
   }
 
   conn() {
@@ -63,7 +71,10 @@ export default class App extends Component {
       timestamp: timestamp,
       token: token,
       info: info,
-      debug: true
+      debug: true,
+      onTransportClose: (ctx) => {
+        console.log('onTransportClose: ', ctx)
+      }
     })
   }
 
@@ -107,6 +118,25 @@ export default class App extends Component {
       receiveTime: moment().format('HH:mm a'),
       hash: chance.geohash()
     })
+
+    if (this.dialogNode.scrollTop !== (this.dialogNode.scrollHeight - this.dialogNode.offsetHeight)) {
+      this.setState({ showNew: true })
+    }
+
+    if (this.lastMsgNode) {
+      setTimeout(() => {
+        const lastMsgHeight = this.lastMsgNode.offsetHeight
+        const tt = this.dialogNode.scrollTop + lastMsgHeight + this.dialogNode.offsetHeight
+        if (this.dialogNode.scrollTop + this.dialogNode.offsetHeight === tt - lastMsgHeight || this.dialogNode.scrollTop === 0) {
+          if (lastMsgHeight >= this.dialogNode.offsetHeight) {
+            this.dialogNode.scrollTop = this.dialogNode.scrollHeight - lastMsgHeight - 20
+          } else {
+            if (!this.state.showNew) this.dialogNode.scrollTop += lastMsgHeight * 2
+          }
+        }
+      }, 50)
+    }
+
     this.forceUpdate()
   }
 
@@ -131,6 +161,19 @@ export default class App extends Component {
     }
   }
 
+  onScroll() {
+    if (this.lastMsgNode) {
+      const lastNodeHeight = this.lastMsgNode.offsetHeight
+      if (this.dialogNode.scrollTop + lastNodeHeight + this.dialogNode.offsetHeight + this.newMsgNode.offsetHeight >= this.dialogNode.scrollHeight) {
+        this.setState({ showNew: false })
+      }
+    }
+  }
+
+  onClickNewMsg() {
+    this.dialogNode.scrollTop = this.dialogNode.scrollHeight 
+  }
+
   renderMsg() {
     var ary = []
     for (var i = 0; i < this.state.message.length; i++) {
@@ -138,7 +181,8 @@ export default class App extends Component {
       if (blob.from === 'system') {
         ary.push(this.renderSystemMsg(blob.message))
       } else {
-        ary.push(this.renderUserMsg(blob))
+        const isLast = this.state.message.length === i
+        ary.push(this.renderUserMsg(blob, isLast))
       }
     }
     return ary
@@ -152,13 +196,13 @@ export default class App extends Component {
     )
   }
 
-  renderUserMsg(blob) {
+  renderUserMsg(blob, isLast) {
     const { from, message, receiveTime, hash } = blob
     const parseName = JSON.parse(from)
     const icon = parseName.charAt(0)
 
     return (
-      <div className={`chat ${parseName === this.randomName ? 'is-me' : 'is-others'}`} key={hash}>
+      <div className={`chat ${parseName === this.randomName ? 'is-me' : 'is-others'}`} key={hash} ref={(c) => { this.lastMsgNode = c }}>
         <div className="chat-userIcon">{icon}</div>
         <div className="chat-wrapper">
           <div className="chat-userName">{parseName}</div>
@@ -171,6 +215,15 @@ export default class App extends Component {
     )
   }
 
+  renderNewMsg() {
+    const lastMsg = _.last(this.state.message)
+    return(
+      <div className="chatroom-newMsg" hidden={!this.state.showNew}  ref={(c) => this.newMsgNode = c} onClick={this.onClickNewMsg}>
+        {_.trim(lastMsg.from, '"')}: {lastMsg.message}
+      </div>
+    )
+  }
+
   render() {
     return (
       <div className="chatroom">
@@ -179,6 +232,7 @@ export default class App extends Component {
         </div>
         <div className="chatroom-dialog" ref={(c) => this.dialogNode = c}>
           {this.renderMsg()}
+          {this.state.message.length &&  this.renderNewMsg()}
         </div>
         <div className="chatroom-input">
           <textarea 

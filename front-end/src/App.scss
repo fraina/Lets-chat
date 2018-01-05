@@ -108,6 +108,30 @@ $b-space-xs: $b-space * .5;
   padding: $b-space;
   overflow: auto;
   padding-bottom: .2em;
+  position: relative;
+}
+
+.chatroom-newMsg {
+  position: sticky;
+  bottom: 0;
+  padding: 5px 8px;
+  width: 100%;
+  overflow: hidden;
+  text-overflow:ellipsis;
+  white-space: nowrap;
+}
+
+.chatroom-newMsg:after { 
+  content: ''; 
+  position: absolute; 
+  top: 0; 
+  left: 0; 
+  right: 0; 
+  bottom: 0; 
+  background-color: rgba(255,255,255, .8); 
+  z-index: -1; 
+  box-shadow: 0 -1 2px rgba(0, 0, 0, .5);
+  filter: blur(2px);
 }
 
 // -------------------------------------
@@ -120,6 +144,8 @@ position: relative;
   width: calc(100% - 6em);
   margin-bottom: $b-space-xs;
   overflow: hidden;
+  word-wrap:break-word; 
+  word-break:normal;
 }
 
 .chat-userIcon {
